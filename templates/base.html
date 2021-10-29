@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    {% block 'head' %} {% endblock %}
+
+    <title>{% block 'titulo' %} {% endblock %}</title>
+
+
+  </head>
+  <body>
+   
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'home' %}">Pythonando</a>
+        {% if usuario_logado %}
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Cadastrar
+          </button>
+          <a href="{% url 'sair'%}" class="btn btn-danger">Sair</a>
+        {% endif %}
+      </nav>
+      
+
+    {% block 'conteudo' %} {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    {% if usuario_logado %}
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Cadastrar livro</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                  <button style="margin-left: 10px;" onclick="mostrar_form(1)" class="btn btn-info" >Categoria</button>
+                  <button style="margin-left: 10px;" onclick="mostrar_form(2)" class="btn btn-warning">Livro</button>
+                  <button style="margin-left: 10px;" onclick="mostrar_form(3)" class="btn btn-primary">Emprestimo</button>
+                  <br>
+                  
+                  <hr>
+                  <div style="display: none;" id="livro">
+                    <form action="{% url 'cadastrar_livro' %}" method="POST">
+                      {% csrf_token %}
+                      <table>
+                        {{form.as_table}}
+                      </table>
+                      
+                      <input type="submit" class="btn btn-success" value="Cadastrar">
+
+                    </form>
+                  </div>
+
+
+                <div style="display: none;" id="categoria">
+                  <form action="{% url 'cadastrar_categoria' %}" method="POST">{% csrf_token %}
+                    <table>
+                      {{form_categoria.as_table}}
+                    </table>
+                    <input type="hidden" name="usuario" value="{{usuario_logado}}">
+                    <input class="btn btn-success" type="submit" value="Enviar">
+                  </form>
+                </div>
+
+                <div style="display: none;" id="emprestimos">
+                  <button onclick="exibe_input_emprestado(1)" class="btn btn-success">Usuário novo</button>
+                  <button onclick="exibe_input_emprestado(2)" class="btn btn-dark" >Usuario existente</button>
+                  <br>
+                  <br>
+                  <form id="form_emprestimo" action="{% url 'cadastrar_emprestimo' %}" method="POST">{% csrf_token %}
+                    <select style="display: none;" id="nome_emprestado" class="form-control" name="nome_emprestado">
+                      
+                      {% for usuario in usuarios %}
+                        <option value="{{usuario.id}}">{{usuario.nome}}</option>
+                      {% endfor %}
+
+                    </select>
+                    <br>
+                    <input id="nome_emprestado_anonimo" type="text" placeholder="Digite o nome para quem emprestou..." name="nome_emprestado_anonimo" class="form-control">
+                    <br>
+                    <select class="form-control" name="livro_emprestado">
+                      
+                      {% for livro in livros_emprestar %}
+                        <option value="{{livro.id}}">{{livro.nome}}</option>
+                      {% endfor %}
+
+                    </select>
+                    <br>
+                    <input type="submit" value="Emprestar" class="btn btn-success">
+                  </form>
+
+
+
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+
+      <script>
+        function mostrar_form(v1){
+          categoria = document.getElementById('categoria')
+          livro = document.getElementById('livro')
+          emprestimo = document.getElementById('emprestimos')
+
+          if(v1 == 1){
+            categoria.style.display = 'block';
+
+
+            livro.style.display = 'none';
+            emprestimo.style.display = 'none';
+          }else if(v1 == 2){
+            livro.style.display = 'block';
+
+            categoria.style.display = 'none';
+            emprestimo.style.display = 'none';
+
+          }else if(v1 == 3){
+            emprestimo.style.display = 'block';
+
+            categoria.style.display = 'none';
+            livro.style.display = 'none';
+
+          }
+
+
+        }
+
+        function exibe_input_emprestado(v1){
+
+          if(v1 == 1){
+            document.getElementById('nome_emprestado').style.display = "none"
+            document.getElementById('nome_emprestado_anonimo').style.display = "block"
+
+          }else{
+            document.getElementById('nome_emprestado').style.display = "block"
+            document.getElementById('nome_emprestado_anonimo').style.display = "none"
+
+          }
+
+
+        }
+      </script>
+
+  </body>
+</html>

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block 'titulo' %} Cadastro {% endblock %}
+
+
+{% block 'conteudo' %}
+
+<div class="container">
+    <br>
+    {% if status == '0'%}
+        <div class="alert alert-success" role="alert">
+            Cadastro realizado com sucesso
+        </div>
+    {% endif %}
+
+    {% if status == '1'%}
+      <div class="alert alert-danger" role="alert">
+        Nome e email não podem estar vazios.
+      </div>
+    {% endif %}
+
+    {% if status == '2'%}
+        <div class="alert alert-danger" role="alert">
+            Sua senha deve ter pelo menos 8 caracteres
+        </div>
+    {% endif %}
+
+    {% if status == '3'%}
+        <div class="alert alert-danger" role="alert">
+            Usuário já existe no sistema
+        </div>
+    {% endif %}
+
+    {% if status == '4'%}
+        <div class="alert alert-danger" role="alert">
+            Erro interno do sistema
+        </div>
+    {% endif %}
+    <div class="row">
+
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md">
+           <h1>Cadastre-se</h1>
+           <hr>
+
+           <form method="POST" action="{% url 'valida_cadastro' %}">{% csrf_token %}
+
+                <label>Nome</label>
+                <input name="nome" class="form-control" type="text" placeholder="Nome..."> 
+                <br>
+                <label>Email</label>
+                <input name="email" class="form-control" type="text" placeholder="Email...">
+                <br>
+                <label>Senha</label>
+                <input name="senha" class="form-control" type="password" placeholder="Senha...">
+                <br>
+                <input class="btn btn-info btn-lg" type="submit" value="Enviar">
+                <a href="{% url 'login' %}" class="btn btn-warning btn-lg">Login</a>
+
+
+           </form>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}
