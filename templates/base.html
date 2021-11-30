@@ -18,10 +18,22 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'home' %}">Pythonando</a>
         {% if usuario_logado %}
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-            Cadastrar
-          </button>
-          <a href="{% url 'sair'%}" class="btn btn-danger">Sair</a>
+        <div class="dropdown show">
+          <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Menu
+          </a>
+        
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+            <button type="button" class="btn btn-primary dropdown-item" data-toggle="modal" data-target="#exampleModal" >Opções</button>
+            <a href="{% url 'seus_emprestimos' %}" class="btn btn-danger dropdown-item">Seus emprestimos</a>
+            <a href="{% url 'sair'%}" class="btn btn-danger dropdown-item">Sair</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item">Total: {{total_livro}}</a>
+          </div>
+        </div>
+
+          
+
         {% endif %}
       </nav>
       
@@ -37,7 +49,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Cadastrar livro</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Cadastrar / Emprestar / Devolver</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -46,6 +58,7 @@
                   <button style="margin-left: 10px;" onclick="mostrar_form(1)" class="btn btn-info" >Categoria</button>
                   <button style="margin-left: 10px;" onclick="mostrar_form(2)" class="btn btn-warning">Livro</button>
                   <button style="margin-left: 10px;" onclick="mostrar_form(3)" class="btn btn-primary">Emprestimo</button>
+                  <button style="margin-left: 10px;" onclick="mostrar_form(4)" class="btn btn-danger">Devolução</button>
                   <br>
                   
                   <hr>
@@ -98,9 +111,22 @@
                     <br>
                     <input type="submit" value="Emprestar" class="btn btn-success">
                   </form>
+                </div>
 
+                <div style="display: none;" id="devolucao">
+                  <form action="{% url 'devolver_livro' %}" method="POST">{% csrf_token %}
+                      <select class="form-control" name="id_livro_devolver">
+                        
+                        {% for livro in livros_emprestados %}
+                            <option value="{{livro.id}}">{{livro.nome}}</option>
+                        {% endfor %}
+                      
 
+                      </select>
+                      <br>
 
+                      <input type="submit" class="btn btn-warning" value="Devolver">
+                  </form>
                 </div>
             </div>
           </div>
@@ -114,25 +140,34 @@
           categoria = document.getElementById('categoria')
           livro = document.getElementById('livro')
           emprestimo = document.getElementById('emprestimos')
+          devolucao = document.getElementById('devolucao')
 
           if(v1 == 1){
             categoria.style.display = 'block';
 
-
+            devolucao.style.display = 'none';
             livro.style.display = 'none';
             emprestimo.style.display = 'none';
           }else if(v1 == 2){
             livro.style.display = 'block';
-
+            
+            devolucao.style.display = 'none';
             categoria.style.display = 'none';
             emprestimo.style.display = 'none';
 
           }else if(v1 == 3){
             emprestimo.style.display = 'block';
 
+            devolucao.style.display = 'none';
             categoria.style.display = 'none';
             livro.style.display = 'none';
 
+          }else if(v1 == 4){
+            devolucao.style.display = 'block';
+
+            categoria.style.display = 'none';
+            livro.style.display = 'none';
+            emprestimo.style.display = 'none';
           }
 
 

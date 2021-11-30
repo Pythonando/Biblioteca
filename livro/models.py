@@ -44,3 +44,6 @@ class Emprestimos(models.Model):
 
     def __str__(self) -> str:
         return f"{self.nome_emprestado} | {self.livro}"
+
+
+
